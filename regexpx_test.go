@@ -2,6 +2,7 @@ package regexpx_test
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
 	rx "github.com/yargevad/regexpx"
@@ -62,6 +63,35 @@ func TestSplit(t *testing.T) {
 					t.Fatalf("string [%s] expected %q, actual %q", test.Input, test.Output, out)
 				}
 			}
+		}
+	}
+}
+
+type ReplaceTest struct {
+	Input   string
+	Replace string
+	Index   int
+	Output  string
+}
+
+var testReplace = rx.RegexpSet{
+	regexp.MustCompile(`foo`),
+	regexp.MustCompile(`y`),
+	regexp.MustCompile(`(baz)`),
+}
+
+func TestReplace(t *testing.T) {
+	for _, test := range []ReplaceTest{
+		{"afoobfooc", "", 0, "abc"},
+		{"xbarybarz", "", 1, "xbarbarz"},
+		{"abazbbazc", "($1)", 2, "a(baz)b(baz)c"},
+		{"abarbbarc", "", -1, "abarbbarc"},
+	} {
+		out, idx := testReplace.Replace(test.Input, test.Replace)
+		if idx != test.Index {
+			t.Fatalf("string [%s] expected index %d, actual %d", test.Input, test.Index, idx)
+		} else if strings.Compare(out, test.Output) != 0 {
+			t.Fatalf("string [%s] expected [%s], actual [%s]", test.Input, test.Output, out)
 		}
 	}
 }

@@ -29,3 +29,15 @@ func (rs *RegexpSet) Split(s string, n int) ([]string, int) {
 	}
 	return nil, -1
 }
+
+// Replace returns a copy of s, replacing matches of the first matching expression with r.
+// The index of the matching pattern is also returned, or -1 when no expression matches.
+// See also regexp.ReplaceAllString
+func (rs *RegexpSet) Replace(s, replace string) (string, int) {
+	for idx, r := range []*regexp.Regexp(*rs) {
+		if r.FindStringIndex(s) != nil {
+			return r.ReplaceAllString(s, replace), idx
+		}
+	}
+	return s, -1
+}
