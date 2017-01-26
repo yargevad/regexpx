@@ -49,6 +49,7 @@ var testSplit = rx.RegexpSet{
 func TestSplit(t *testing.T) {
 	for _, test := range []SplitTest{
 		{"paqerisotu", 0, []string{"p", "q", "r", "s", "t", ""}},
+		{"fffffff", -1, nil},
 	} {
 		out, idx := testSplit.Split(test.Input, -1)
 		if idx != test.Index {
