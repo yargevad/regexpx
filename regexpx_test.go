@@ -12,19 +12,26 @@ var testMatch = rx.RegexpSet{
 	regexp.MustCompile(`^abc+d$`),
 }
 
-type Expected struct {
+type MatchTest struct {
+	Input string
 	Match bool
 	Index int
 }
 
 func TestMatch(t *testing.T) {
-	expected := []Expected{{false, -1}, {false, -1}, {true, 0}, {true, 0}, {true, 1}, {false, -1}}
-	for i, str := range []string{"", "a", "abc", "abcc", "abcd", "abcde"} {
-		actual, idx := testMatch.Match(str)
-		if actual != expected[i].Match {
-			t.Fatalf("string [%s] expected %t actual %t", str, expected[i].Match, actual)
-		} else if idx != expected[i].Index {
-			t.Fatalf("string [%s] expected index %d, actual %d", str, expected[i].Index, idx)
+	for _, test := range []MatchTest{
+		{"", false, -1},
+		{"a", false, -1},
+		{"abc", true, 0},
+		{"abcc", true, 0},
+		{"abcd", true, 1},
+		{"abcde", false, -1},
+	} {
+		actual, idx := testMatch.Match(test.Input)
+		if actual != test.Match {
+			t.Fatalf("string [%s] expected %t actual %t", test.Input, test.Match, actual)
+		} else if idx != test.Index {
+			t.Fatalf("string [%s] expected index %d, actual %d", test.Input, test.Index, idx)
 		}
 	}
 }
