@@ -35,3 +35,32 @@ func TestMatch(t *testing.T) {
 		}
 	}
 }
+
+type SplitTest struct {
+	Input  string
+	Index  int
+	Output []string
+}
+
+var testSplit = rx.RegexpSet{
+	regexp.MustCompile(`[aeiou]`),
+}
+
+func TestSplit(t *testing.T) {
+	for _, test := range []SplitTest{
+		{"paqerisotu", 0, []string{"p", "q", "r", "s", "t", ""}},
+	} {
+		out, idx := testSplit.Split(test.Input, -1)
+		if idx != test.Index {
+			t.Fatalf("string [%s] expected index %d, actual %d", test.Input, test.Index, idx)
+		} else if len(out) != len(test.Output) {
+			t.Fatalf("string [%s] expected length %d, actual %d", test.Input, len(test.Output), len(out))
+		} else {
+			for i, elt := range out {
+				if test.Output[i] != elt {
+					t.Fatalf("string [%s] expected %q, actual %q", test.Input, test.Output, out)
+				}
+			}
+		}
+	}
+}
